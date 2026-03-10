@@ -1,10 +1,13 @@
-FROM python:3.12-slim
-
+# Build stage
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn package -DskipTests -B
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY fetch_odds.py .
-
-CMD ["python", "fetch_odds.py"]
+# Runtime stage
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+COPY --from=build /app/target/fetch-odds-1.0.0.jar app.jar
+CMD ["java", "-jar", "app.jar"]

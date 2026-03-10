@@ -1,13 +1,16 @@
-# Python bytecode
-__pycache__/
-*.py[cod]
-*$py.class
-*.pyo
+# Maven
+target/
 
-# Pytest
-.pytest_cache/
-.coverage
-htmlcov/
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
 
 # Generated CSV artifacts
 odds_*.csv
