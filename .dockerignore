@@ -1,0 +1,14 @@
+.git
+.github
+__pycache__
+*.py[cod]
+*$py.class
+*.pyo
+.pytest_cache
+.coverage
+htmlcov
+tests
+pytest.ini
+requirements-test.txt
+odds_*.csv
+*.md
