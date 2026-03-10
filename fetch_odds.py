@@ -1,5 +1,8 @@
+import csv
 import os
 import sys
+from datetime import datetime, timezone
+
 import requests
 
 API_KEY = os.environ.get("ODDS_API_KEY")
@@ -16,6 +19,8 @@ params = {
     "markets": "h2h"
 }
 
+csv_filename = f"odds_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.csv"
+
 try:
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -24,16 +29,34 @@ except requests.HTTPError as exc:
 
 data = response.json()
 
-for game in data:
-    home = game.get("home_team", "Unknown")
-    away = game.get("away_team", "Unknown")
-    print(home, "vs", away)
+try:
+    csvfile = open(csv_filename, "w", newline="", encoding="utf-8")
+except OSError as exc:
+    sys.exit(f"Error creating CSV file {csv_filename}: {exc}")
 
-    for bookmaker in game.get("bookmakers", []):
-        print("  Casa:", bookmaker.get("title", "Unknown"))
+with csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["home_team", "away_team", "bookmaker", "outcome", "price"])
 
-        for market in bookmaker.get("markets", []):
-            for outcome in market.get("outcomes", []):
-                print("   ", outcome.get("name"), outcome.get("price"))
+    for game in data:
+        home = game.get("home_team", "Unknown")
+        away = game.get("away_team", "Unknown")
+        print(home, "vs", away)
 
-    print()
+        for bookmaker in game.get("bookmakers", []):
+            print("  Casa:", bookmaker.get("title", "Unknown"))
+
+            for market in bookmaker.get("markets", []):
+                for outcome in market.get("outcomes", []):
+                    print("   ", outcome.get("name"), outcome.get("price"))
+                    writer.writerow([
+                        home,
+                        away,
+                        bookmaker.get("title", "Unknown"),
+                        outcome.get("name"),
+                        outcome.get("price"),
+                    ])
+
+        print()
+
+print(f"Results exported to {csv_filename}")
