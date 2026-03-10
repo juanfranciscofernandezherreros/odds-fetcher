@@ -34,7 +34,7 @@ jobs:
             echo "::warning::ODDS_API_KEY secret is not set. Skipping odds fetch."
             exit 0
           fi
-          java -jar target/fetch-odds-1.0.0.jar
+          java -jar target/fetch-odds-*.jar
 
       - name: Upload CSV artifact
         if: always()
