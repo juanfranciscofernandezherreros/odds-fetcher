@@ -1,0 +1,7 @@
+services:
+  fetch-odds:
+    build: .
+    environment:
+      - ODDS_API_KEY=${ODDS_API_KEY}
+    volumes:
+      - ./output:/app/output
