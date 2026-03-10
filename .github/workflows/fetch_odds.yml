@@ -16,13 +16,15 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          python-version: "3.12"
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven"
 
-      - name: Install dependencies
-        run: pip install requests
+      - name: Build application
+        run: mvn package -DskipTests -B
 
       - name: Fetch NBA odds
         env:
@@ -32,7 +34,7 @@ jobs:
             echo "::warning::ODDS_API_KEY secret is not set. Skipping odds fetch."
             exit 0
           fi
-          python fetch_odds.py
+          java -jar target/fetch-odds-1.0.0.jar
 
       - name: Upload CSV artifact
         if: always()
