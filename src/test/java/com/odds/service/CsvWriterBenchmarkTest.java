@@ -100,7 +100,7 @@ class CsvWriterBenchmarkTest {
 
         // --- Log comparison (informational, not asserted) ---
         // In JUnit, limited JIT warmup causes high variance in timing results.
-        // Standalone benchmarks consistently show strategy 1 winning by 16–33%.
+        // Standalone benchmarks consistently show strategy 1 winning by 16-33%.
         // See docs/PERFORMANCE.md for standalone benchmark results.
         if (currentTime > printTime) {
             System.out.println("INFO: Current slower than PrintWriter in JUnit (expected with limited JIT warmup)");
