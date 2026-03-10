@@ -58,12 +58,12 @@ Find the fastest CSV writing strategy in Java for exporting betting odds data.
 
 | # | Strategy | Description |
 |---|----------|-------------|
-| A | **BufferedWriter 64 KB + row concat** | One `write(string)` call per row using Java `+` operator; 64 KB buffer reduces OS calls |
-| B | BufferedWriter 64 KB + direct writes | Multiple `write()` calls per field (7 calls/row); 64 KB buffer |
-| C | FileWriter + row concat | Java's `FileWriter` with internal 8 KB buffer; one concat per row |
-| D | PrintWriter + println | `PrintWriter.println()` per row; adds synchronization overhead |
-| E | In-memory StringBuilder | Builds entire CSV in RAM, then `Files.writeString()` once |
-| F | BufferedOutputStream + getBytes | Byte-stream; calls `getBytes(UTF_8)` per field (5 allocations/row) |
+| 1 | **BufferedWriter 64 KB + row concat** | One `write(string)` call per row using Java `+` operator; 64 KB buffer reduces OS calls |
+| 2 | BufferedWriter 64 KB + direct writes | Multiple `write()` calls per field (7 calls/row); 64 KB buffer |
+| 3 | FileWriter + row concat | Java's `FileWriter` with internal 8 KB buffer; one concat per row |
+| 4 | PrintWriter + println | `PrintWriter.println()` per row; adds synchronization overhead |
+| 5 | In-memory StringBuilder | Builds entire CSV in RAM, then `Files.writeString()` once |
+| 6 | BufferedOutputStream + getBytes | Byte-stream; calls `getBytes(UTF_8)` per field (5 allocations/row) |
 
 ### Benchmark Setup
 
@@ -80,28 +80,28 @@ Find the fastest CSV writing strategy in Java for exporting betting odds data.
 
 ```
 Run 1:
-  B) BufferedWriter 64KB + row concat (+)    533 ms  ★ BEST
-  C) FileWriter + row concat (+)             617 ms    +16%
-  E) In-memory StringBuilder → writeString   642 ms    +20%
-  F) BufferedOutputStream 64KB + getBytes    658 ms    +23%
-  A) BufferedWriter 64KB + direct writes     670 ms    +26%
-  D) PrintWriter + println per row           719 ms    +35%
+  1) BufferedWriter 64KB + row concat (+)    533 ms  ★ BEST
+  3) FileWriter + row concat (+)             617 ms    +16%
+  5) In-memory StringBuilder → writeString   642 ms    +20%
+  6) BufferedOutputStream 64KB + getBytes    658 ms    +23%
+  2) BufferedWriter 64KB + direct writes     670 ms    +26%
+  4) PrintWriter + println per row           719 ms    +35%
 
 Run 2:
-  B) BufferedWriter 64KB + row concat (+)    524 ms  ★ BEST
-  C) FileWriter + row concat (+)             629 ms    +20%
-  E) In-memory StringBuilder → writeString   652 ms    +24%
-  F) BufferedOutputStream 64KB + getBytes    668 ms    +27%
-  A) BufferedWriter 64KB + direct writes     692 ms    +32%
-  D) PrintWriter + println per row           764 ms    +46%
+  1) BufferedWriter 64KB + row concat (+)    524 ms  ★ BEST
+  3) FileWriter + row concat (+)             629 ms    +20%
+  5) In-memory StringBuilder → writeString   652 ms    +24%
+  6) BufferedOutputStream 64KB + getBytes    668 ms    +27%
+  2) BufferedWriter 64KB + direct writes     692 ms    +32%
+  4) PrintWriter + println per row           764 ms    +46%
 
 Run 3:
-  B) BufferedWriter 64KB + row concat (+)    543 ms  ★ BEST
-  E) In-memory StringBuilder → writeString   668 ms    +23%
-  C) FileWriter + row concat (+)             679 ms    +25%
-  F) BufferedOutputStream 64KB + getBytes    715 ms    +32%
-  A) BufferedWriter 64KB + direct writes     720 ms    +33%
-  D) PrintWriter + println per row           756 ms    +39%
+  1) BufferedWriter 64KB + row concat (+)    543 ms  ★ BEST
+  5) In-memory StringBuilder → writeString   668 ms    +23%
+  3) FileWriter + row concat (+)             679 ms    +25%
+  6) BufferedOutputStream 64KB + getBytes    715 ms    +32%
+  2) BufferedWriter 64KB + direct writes     720 ms    +33%
+  4) PrintWriter + println per row           756 ms    +39%
 ```
 
 ### Results — JUnit Benchmark (sample run)
@@ -115,9 +115,9 @@ Run 3:
   4. PrintWriter + println                    189 ms    +34%
 ```
 
-### Winner: BufferedWriter 64 KB + Row Concat
+### Winner: Strategy 1 — BufferedWriter 64 KB + Row Concat
 
-**Strategy A wins consistently by 16–33%** over the next best alternative across
+**Strategy 1 wins consistently by 16–33%** over the next best alternative across
 all standalone runs.
 
 ---
@@ -162,9 +162,9 @@ The `CsvWriter` properly escapes CSV fields following RFC 4180:
 - Fields containing commas, double quotes, or newlines are wrapped in quotes
 - Double quotes inside fields are escaped as `""`
 
-```java
-// Example: "Team, A" → "\"Team, A\""
-// Example: "Bookie \"X\"" → "\"Bookie \"\"X\"\"\""
+```
+Input:  Team, A        →  CSV output: "Team, A"
+Input:  Bookie "X"     →  CSV output: "Bookie ""X"""
 ```
 
 ---
