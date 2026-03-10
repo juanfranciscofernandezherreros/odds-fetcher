@@ -2,11 +2,6 @@ name: Fetch NBA Odds
 
 on:
   workflow_dispatch:
-    inputs:
-      api_key:
-        description: "Odds API key (leave empty to use the repository secret)"
-        required: false
-        type: secret
   schedule:
     # Runs every day at 08:00 UTC
     - cron: "0 8 * * *"
@@ -31,5 +26,10 @@ jobs:
 
       - name: Fetch NBA odds
         env:
-          ODDS_API_KEY: ${{ inputs.api_key || secrets.ODDS_API_KEY }}
-        run: python fetch_odds.py
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: |
+          if [ -z "$ODDS_API_KEY" ]; then
+            echo "::warning::ODDS_API_KEY secret is not set. Skipping odds fetch."
+            exit 0
+          fi
+          python fetch_odds.py
