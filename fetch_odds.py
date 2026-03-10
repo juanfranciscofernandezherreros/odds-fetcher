@@ -19,7 +19,7 @@ params = {
     "markets": "h2h"
 }
 
-csv_filename = f"odds_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.csv"
+csv_filename = f"odds_{datetime.now(timezone.utc).strftime('%Y-%m-%d_%H-%M-%S')}.csv"
 
 try:
     response = requests.get(url, params=params)
