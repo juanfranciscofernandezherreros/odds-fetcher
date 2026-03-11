@@ -27,6 +27,7 @@ jobs:
         run: mvn package -DskipTests -B
 
       - name: Fetch NBA odds
+        id: fetch
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: |
@@ -36,6 +37,9 @@ jobs:
           fi
           java -jar target/fetch-odds-*.jar
 
+          GENERATED_FILE=$(ls -t odds_*.csv 2>/dev/null | head -n1)
+          echo "generated_file=$GENERATED_FILE" >> "$GITHUB_OUTPUT"
+
       - name: Upload CSV artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -43,3 +47,21 @@ jobs:
           name: nba-odds-csv
           path: odds_*.csv
           if-no-files-found: warn
+
+      - name: Push CSV to data repository
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.fetch.outputs.generated_file != ''
+        env:
+          DATA_REPO_TOKEN: ${{ secrets.DATA_REPO_TOKEN }}
+        run: |
+          git config --global user.name "Juan Francisco"
+          git config --global user.email "juanfranciscofernandezherreros@github.com"
+
+          git clone https://x-access-token:${DATA_REPO_TOKEN}@github.com/juanfranciscofernandezherreros/basketball-data.git
+
+          cp "${{ steps.fetch.outputs.generated_file }}" basketball-data/
+
+          cd basketball-data
+
+          git add "$(basename "${{ steps.fetch.outputs.generated_file }}")"
+          git commit -m "Update basketball matches data $(date -u)" || echo "No changes to commit"
+          git push
