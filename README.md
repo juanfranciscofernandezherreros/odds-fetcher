@@ -1,6 +1,6 @@
 # NBA Odds Fetcher
 
-[![Run Tests](https://github.com/juanfranciscofernandezherreros/cuddly-octo-computing-machine/actions/workflows/run_tests.yml/badge.svg)](https://github.com/juanfranciscofernandezherreros/cuddly-octo-computing-machine/actions/workflows/run_tests.yml)
+[![Run Tests](https://github.com/juanfranciscofernandezherreros/odds-fetcher/actions/workflows/run_tests.yml/badge.svg)](https://github.com/juanfranciscofernandezherreros/odds-fetcher/actions/workflows/run_tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Java 17](https://img.shields.io/badge/Java-17-blue?logo=openjdk)](https://adoptium.net/)
 [![Spring Boot 3.2.5](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen?logo=spring)](https://spring.io/projects/spring-boot)
@@ -16,6 +16,7 @@ A Spring Boot application that fetches NBA sports betting odds from [The Odds AP
 - [Tests](#tests)
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
+- [Architecture](#architecture)
 - [Performance](#performance)
 - [Contributing](#contributing)
 - [License](#license)
@@ -38,8 +39,8 @@ A Spring Boot application that fetches NBA sports betting odds from [The Odds AP
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/juanfranciscofernandezherreros/cuddly-octo-computing-machine.git
-cd cuddly-octo-computing-machine
+git clone https://github.com/juanfranciscofernandezherreros/odds-fetcher.git
+cd odds-fetcher
 
 # 2. Build
 mvn clean package
@@ -111,6 +112,10 @@ src/main/java/com/odds/
 | `odds.api.sport`            | `basketball_nba`                                 | Sport to fetch odds for  |
 
 Configuration is managed in `src/main/resources/application.properties`.
+
+## Architecture
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full architecture documentation including data flow, component, package, and sequence diagrams.
 
 ## Performance
 
