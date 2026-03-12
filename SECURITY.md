@@ -10,7 +10,7 @@
 
 If you discover a security vulnerability in this project, please **do not** open a public issue.
 
-Instead, report it privately by opening a [GitHub Security Advisory](https://github.com/juanfranciscofernandezherreros/cuddly-octo-computing-machine/security/advisories/new).
+Instead, report it privately by opening a [GitHub Security Advisory](https://github.com/juanfranciscofernandezherreros/odds-fetcher/security/advisories/new).
 
 Please include:
 - A description of the vulnerability and its potential impact

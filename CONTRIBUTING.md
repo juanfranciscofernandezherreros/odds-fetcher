@@ -21,8 +21,8 @@ Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md). By participati
 1. **Fork** the repository on GitHub.
 2. **Clone** your fork locally:
    ```bash
-   git clone https://github.com/your-username/cuddly-octo-computing-machine.git
-   cd cuddly-octo-computing-machine
+   git clone https://github.com/your-username/odds-fetcher.git
+   cd odds-fetcher
    ```
 3. **Create a branch** for your changes:
    ```bash
