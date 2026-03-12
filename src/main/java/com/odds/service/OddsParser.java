@@ -15,6 +15,9 @@ public class OddsParser {
 
     public List<OddsRow> parseOdds(List<Game> games) {
         List<OddsRow> rows = new ArrayList<>();
+        if (games == null) {
+            return rows;
+        }
         for (Game game : games) {
             String home = game.getHomeTeam();
             String away = game.getAwayTeam();

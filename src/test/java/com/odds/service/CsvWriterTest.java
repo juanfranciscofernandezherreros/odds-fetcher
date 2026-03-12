@@ -64,4 +64,27 @@ class CsvWriterTest {
         assertEquals(2, lines.size());
         assertEquals("\"Team, A\",Team B,\"Bookie \"\"X\"\"\",Draw,3.0", lines.get(1));
     }
+
+    @Test
+    void writeCsv_nullPrice_writesEmptyField(@TempDir Path tempDir) throws IOException {
+        OddsRow row = new OddsRow("Lakers", "Celtics", "Bet365", "Lakers", null);
+
+        Path file = tempDir.resolve("test.csv");
+        csvWriter.writeCsv(List.of(row), file.toString());
+
+        List<String> lines = Files.readAllLines(file);
+        assertEquals(2, lines.size());
+        assertEquals("Lakers,Celtics,Bet365,Lakers,", lines.get(1));
+    }
+
+    @Test
+    void writeCsv_handlesCarriageReturn(@TempDir Path tempDir) throws IOException {
+        OddsRow row = new OddsRow("Team\rA", "Team B", "Bet365", "Draw", 3.0);
+
+        Path file = tempDir.resolve("test.csv");
+        csvWriter.writeCsv(List.of(row), file.toString());
+
+        String content = Files.readString(file);
+        assertTrue(content.contains("\"Team\rA\""));
+    }
 }

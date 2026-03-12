@@ -41,7 +41,7 @@ public class CsvWriter {
                         + escapeCsv(row.getAwayTeam()) + ","
                         + escapeCsv(row.getBookmaker()) + ","
                         + escapeCsv(row.getOutcome()) + ","
-                        + row.getPrice() + "\n");
+                        + (row.getPrice() != null ? row.getPrice() : "") + "\n");
             }
         }
     }
@@ -50,7 +50,7 @@ public class CsvWriter {
         if (value == null) {
             return "";
         }
-        if (value.indexOf(',') >= 0 || value.indexOf('"') >= 0 || value.indexOf('\n') >= 0) {
+        if (value.indexOf(',') >= 0 || value.indexOf('"') >= 0 || value.indexOf('\n') >= 0 || value.indexOf('\r') >= 0) {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
         return value;

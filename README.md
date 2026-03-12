@@ -55,8 +55,6 @@ The application writes a CSV file named `odds_<timestamp>.csv` in the current di
 
 | Column       | Description                          |
 |--------------|--------------------------------------|
-| `game_id`    | Unique game identifier               |
-| `commence`   | Game start time (ISO-8601)           |
 | `home_team`  | Home team name                       |
 | `away_team`  | Away team name                       |
 | `bookmaker`  | Bookmaker name                       |

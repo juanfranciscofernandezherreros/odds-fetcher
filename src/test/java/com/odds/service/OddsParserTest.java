@@ -23,6 +23,12 @@ class OddsParserTest {
     }
 
     @Test
+    void parseOdds_nullList_returnsEmptyList() {
+        List<OddsRow> rows = parser.parseOdds(null);
+        assertTrue(rows.isEmpty());
+    }
+
+    @Test
     void parseOdds_gameWithNoBookmakers_returnsEmptyList() {
         Game game = new Game("Lakers", "Celtics", Collections.emptyList());
         List<OddsRow> rows = parser.parseOdds(List.of(game));
