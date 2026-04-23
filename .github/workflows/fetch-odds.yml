@@ -1,0 +1,59 @@
+name: Fetch Odds
+
+on:
+  workflow_dispatch:
+    inputs:
+      sport:
+        description: 'Sport key (e.g. basketball_nba)'
+        required: false
+        default: 'basketball_nba'
+      regions:
+        description: 'Regions (e.g. eu, us)'
+        required: false
+        default: 'eu'
+      markets:
+        description: 'Markets (e.g. h2h, spreads)'
+        required: false
+        default: 'h2h'
+
+jobs:
+  fetch-and-export:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build fat JAR
+        run: mvn -B package -DskipTests
+
+      - name: Run odds fetcher
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          ODDS_API_SPORT: ${{ github.event.inputs.sport }}
+          ODDS_API_REGIONS: ${{ github.event.inputs.regions }}
+          ODDS_API_MARKETS: ${{ github.event.inputs.markets }}
+        run: |
+          java \
+            -Dodds.api.sport="${ODDS_API_SPORT}" \
+            -Dodds.api.regions="${ODDS_API_REGIONS}" \
+            -Dodds.api.markets="${ODDS_API_MARKETS}" \
+            -jar target/fetch-odds-*.jar
+
+      # The application writes odds_YYYY-MM-DD_HH-mm-ss.csv (see CsvWriter.generateFilename)
+      - name: Upload CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: odds-csv-${{ github.run_id }}
+          path: odds_*.csv
+          if-no-files-found: error
+          retention-days: 30
